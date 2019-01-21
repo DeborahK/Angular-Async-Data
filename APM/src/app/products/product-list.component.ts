@@ -10,7 +10,7 @@ import { ProductService } from './product.service';
 export class ProductListComponent implements OnInit {
   pageTitle = 'Product List';
   errorMessage = '';
-  products: Product[] = [];
+  products: Product[];
 
   constructor(private productService: ProductService) { }
 
@@ -22,6 +22,9 @@ export class ProductListComponent implements OnInit {
       },
       error => this.errorMessage = <any>error
     );
+    // This logs "undefined"
+    // console.log(this.products);
+
   }
 
 }
