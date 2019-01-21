@@ -1,58 +1,63 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Product, ProductResolved } from '../product';
-import { ProductService } from '../product.service';
+import { Product } from '.././product';
+import { ProductService } from '.././product.service';
 
 @Component({
-  templateUrl: './product-edit.component.html',
-  styleUrls: ['./product-edit.component.css']
+  templateUrl: './product-edit.component.html'
 })
 export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
+  productForm: FormGroup;
+  product: Product;
   errorMessage: string;
 
-  private dataIsValid: { [key: string]: boolean } = {};
-
-  get isDirty(): boolean {
-    return JSON.stringify(this.originalProduct) !== JSON.stringify(this.currentProduct);
+  constructor(private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private productService: ProductService) {
   }
-
-  private currentProduct: Product;
-  private originalProduct: Product;
-
-  get product(): Product {
-    return this.currentProduct;
-  }
-  set product(value: Product) {
-    this.currentProduct = value;
-    // Clone the object to retain a copy
-    this.originalProduct = value ? { ...value } : null;
-  }
-
-  constructor(private productService: ProductService,
-              private route: ActivatedRoute,
-              private router: Router) { }
 
   ngOnInit(): void {
+    this.productForm = this.fb.group({
+      productName: ['', [Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(50)]],
+      productCode: ['', Validators.required],
+      description: ''
+    });
+
+    // Read the data from the resolver
     this.route.data.subscribe(data => {
-      const resolvedData: ProductResolved = data['resolvedData'];
-      this.errorMessage = resolvedData.error;
-      this.onProductRetrieved(resolvedData.product);
+      this.product = data['resolvedData'].product;
+      this.errorMessage = data['resolvedData'].error;
+      this.displayProduct();
     });
   }
 
-  onProductRetrieved(product: Product): void {
-    this.product = product;
+  displayProduct(): void {
+    if (this.productForm) {
+      this.productForm.reset();
+    }
 
-    if (!this.product) {
-      this.pageTitle = 'No product found';
-    } else {
+    if (this.product) {
       if (this.product.id === 0) {
         this.pageTitle = 'Add Product';
       } else {
         this.pageTitle = `Edit Product: ${this.product.productName}`;
       }
+
+      // Update the data on the form
+      this.productForm.patchValue({
+        productName: this.product.productName,
+        productCode: this.product.productCode,
+        description: this.product.description
+      });
+
+    } else {
+      this.pageTitle = 'Product not found';
     }
   }
 
@@ -71,35 +76,26 @@ export class ProductEditComponent implements OnInit {
     }
   }
 
-  isValid(path?: string): boolean {
-    this.validate();
-    if (path) {
-      return this.dataIsValid[path];
-    }
-    return (this.dataIsValid &&
-      Object.keys(this.dataIsValid).every(d => this.dataIsValid[d] === true));
-  }
-
-  reset(): void {
-    this.dataIsValid = null;
-    this.currentProduct = null;
-    this.originalProduct = null;
-  }
-
   saveProduct(): void {
-    if (this.isValid()) {
-      if (this.product.id === 0) {
-        this.productService.createProduct(this.product)
-          .subscribe(
-            () => this.onSaveComplete(),
-            (error: any) => this.errorMessage = <any>error
-          );
+    if (this.productForm.valid) {
+      if (this.productForm.dirty) {
+        const p = { ...this.product, ...this.productForm.value };
+
+        if (p.id === 0) {
+          this.productService.createProduct(p)
+            .subscribe(
+              () => this.onSaveComplete(),
+              (error: any) => this.errorMessage = <any>error
+            );
+        } else {
+          this.productService.updateProduct(p)
+            .subscribe(
+              () => this.onSaveComplete(),
+              (error: any) => this.errorMessage = <any>error
+            );
+        }
       } else {
-        this.productService.updateProduct(this.product)
-          .subscribe(
-            () => this.onSaveComplete(),
-            (error: any) => this.errorMessage = <any>error
-          );
+        this.onSaveComplete();
       }
     } else {
       this.errorMessage = 'Please correct the validation errors.';
@@ -107,32 +103,8 @@ export class ProductEditComponent implements OnInit {
   }
 
   onSaveComplete(): void {
-    this.reset();
-
-    // Navigate back to the product list
+    // Reset the form to clear the flags
+    this.productForm.reset();
     this.router.navigate(['/products']);
   }
-
-  validate(): void {
-    // Clear the validation object
-    this.dataIsValid = {};
-
-    // 'info' tab
-    if (this.product.productName &&
-      this.product.productName.length >= 3 &&
-      this.product.productCode) {
-      this.dataIsValid['info'] = true;
-    } else {
-      this.dataIsValid['info'] = false;
-    }
-
-    // 'tags' tab
-    if (this.product.category &&
-      this.product.category.length >= 3) {
-      this.dataIsValid['tags'] = true;
-    } else {
-      this.dataIsValid['tags'] = false;
-    }
-  }
-
 }

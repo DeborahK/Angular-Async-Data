@@ -18,7 +18,7 @@
         <tbody>
           <tr *ngFor="let product of products">
             <td>
-              <a [routerLink]="[product.id]">
+              <a [routerLink]="['/products', product.id]">
                 {{ product.productName }}
               </a>
             </td>
@@ -26,7 +26,7 @@
             <td>{{ product.price | currency:"USD":"symbol":"1.2-2" }}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm"
-                      [routerLink]="[product.id, 'edit']">
+                      [routerLink]="['/products', product.id, 'edit']">
                 Edit
               </button>
             </td>
