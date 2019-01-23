@@ -12,7 +12,7 @@ import { catchError } from 'rxjs/operators';
 })
 export class ProductListAsyncPipeComponent implements OnInit {
   pageTitle = 'Product List';
-  products$: Observable<Product[]> | null;
+  products$: Observable<Product[] | null>;
 
   /* Use *either* error$ or errorMessage, not both */
   error$ = new Subject<string>();
