@@ -6,6 +6,7 @@ import { ProductListComponent } from './product-list.component';
 import { ProductListAsyncPipeComponent } from './product-list-asyncPipe.component';
 import { ProductDetailComponent } from './product-detail.component';
 import { ProductEditComponent } from './product-edit/product-edit.component';
+import { ProductListCategoryComponent } from './product-list-category.component';
 
 import { ProductResolver } from './product-resolver.service';
 import { ProductEditGuard } from './product-edit/product-edit.guard';
@@ -22,8 +23,12 @@ import { SharedModule } from '../shared/shared.module';
         component: ProductListComponent
       },
       {
-        path: 'AsyncPipe',
+        path: 'asyncPipe',
         component: ProductListAsyncPipeComponent
+      },
+      {
+        path: 'category',
+        component: ProductListCategoryComponent
       },
       {
         path: ':id',
@@ -41,6 +46,7 @@ import { SharedModule } from '../shared/shared.module';
   declarations: [
     ProductListComponent,
     ProductListAsyncPipeComponent,
+    ProductListCategoryComponent,
     ProductDetailComponent,
     ProductEditComponent
   ]
