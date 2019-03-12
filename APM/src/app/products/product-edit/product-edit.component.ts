@@ -4,6 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { Product } from '.././product';
 import { ProductService } from '.././product.service';
+import { ProductCategory } from '../../product-categories/product-category';
+import { ProductCategoryService } from '../../product-categories/product-category.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   templateUrl: './product-edit.component.html'
@@ -12,50 +15,48 @@ export class ProductEditComponent implements OnInit {
   pageTitle = 'Product Edit';
   productForm: FormGroup;
   product: Product;
+  categories: ProductCategory[];
   errorMessage: string;
 
   constructor(private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService) {
+    private productService: ProductService,
+    private productCategoryService: ProductCategoryService) {
   }
 
   ngOnInit(): void {
-    this.productForm = this.fb.group({
-      productName: ['', [Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(50)]],
-      productCode: ['', Validators.required],
-      description: ''
-    });
+    // Read the parameter from the route
+    const id = +this.route.snapshot.paramMap.get('id');
+    const product$ = this.productService.getProduct(id);
+    const categories$ = this.productCategoryService.getCategories();
 
-    // Read the data from the resolver
-    this.route.data.subscribe(data => {
-      this.product = data['resolvedData'].product;
-      this.errorMessage = data['resolvedData'].error;
+    // get the product and product category data in parallel
+    forkJoin([product$, categories$]).subscribe(result => {
+      this.product = result[0];
+      this.categories = result[1];
       this.displayProduct();
-    });
+    },
+      error => this.errorMessage = <any>error
+    );
   }
 
   displayProduct(): void {
-    if (this.productForm) {
-      this.productForm.reset();
-    }
-
     if (this.product) {
+      // Define the form
+      this.productForm = this.fb.group({
+        productName: [this.product.productName, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+        productCode: [this.product.productCode, Validators.required],
+        description: this.product.description,
+        categoryId: this.product.categoryId
+      });
+
+      // Set tje appropriate page title
       if (this.product.id === 0) {
         this.pageTitle = 'Add Product';
       } else {
         this.pageTitle = `Edit Product: ${this.product.productName}`;
       }
-
-      // Update the data on the form
-      this.productForm.patchValue({
-        productName: this.product.productName,
-        productCode: this.product.productCode,
-        description: this.product.description
-      });
-
     } else {
       this.pageTitle = 'Product not found';
     }

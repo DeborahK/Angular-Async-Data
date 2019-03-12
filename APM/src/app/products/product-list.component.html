@@ -11,6 +11,7 @@
           <tr>
             <th>Product</th>
             <th>Code</th>
+            <th>Category</th>
             <th>Price</th>
             <th></th>
           </tr>
@@ -23,6 +24,7 @@
               </a>
             </td>
             <td>{{ product.productCode }}</td>
+            <td>{{ product.categoryName }}</td>
             <td>{{ product.price | currency:"USD":"symbol":"1.2-2" }}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm"
@@ -35,6 +37,14 @@
       </table>
     </div>
 
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <button class="btn btn-outline-primary"
+                [routerLink]="['/products', 0, 'edit']">
+          Add Product
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

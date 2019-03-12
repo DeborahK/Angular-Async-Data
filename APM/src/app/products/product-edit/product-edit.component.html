@@ -68,6 +68,32 @@
         </div>
       </div>
 
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label"
+               for="categoryId">Category</label>
+        <div class="col-md-8">
+          <select class="form-control"
+                  id="categoryId"
+                  required
+                  formControlName="categoryId"
+                  [ngClass]="{'is-invalid': (productForm.get('categoryId').touched ||
+                                            productForm.get('categoryId').dirty || 
+                                            product.id !== 0) &&
+                                            !productForm.get('categoryId').valid }">
+            <option value="null" disabled selected hidden>Category (required)</option>
+            <option *ngFor="let category of categories"
+                    [ngValue]="category.id">
+              {{category.name}}
+            </option>
+          </select>
+          <span class="invalid-feedback">
+            <span *ngIf="productForm.get('categoryId').errors?.required">
+              A category must be selected.
+            </span>
+          </span>
+        </div>
+      </div>
+
       <div class="form-group row mb-2">
         <div class="offset-md-2 col-md-4">
           <button class="btn btn-primary mr-3"

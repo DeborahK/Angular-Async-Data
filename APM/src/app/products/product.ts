@@ -3,7 +3,8 @@ export interface Product {
   id: number;
   productName: string;
   productCode: string;
-  category: string;
+  categoryId: number;
+  categoryName?: string;
   tags?: string[];
   price: number;
   description: string;
