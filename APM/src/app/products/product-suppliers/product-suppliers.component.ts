@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { Supplier } from 'src/app/suppliers/supplier';
+import { Supplier } from '../../suppliers/supplier';
+import { SupplierService } from '../../suppliers/supplier.service';
+
 import { mergeMap, tap, map } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
@@ -13,28 +15,33 @@ import { forkJoin } from 'rxjs';
 export class ProductSuppliersComponent implements OnInit {
   pageTitle = 'Product Suppliers';
   product: Product;
-  suppliers: Supplier[];
+  suppliers: Supplier[] = [];
   errorMessage: string;
 
   constructor(private route: ActivatedRoute,
-    private productService: ProductService) { }
+    private productService: ProductService,
+    private supplierService: SupplierService) { }
 
   ngOnInit(): void {
     // Read the parameter from the route
     const id = +this.route.snapshot.paramMap.get('id');
 
     // AntiPattern: Nested subscriptions
-    // this.productService.getProduct(id).subscribe(
-    //   product => {
-    //     this.product = product;
-    //     this.displayProduct(product);
-    //     this.productService.getSuppliersForProduct(id).subscribe(
-    //       suppliers => this.suppliers = suppliers,
-    //       error => this.errorMessage = error
-    //     )
-    //   },
-    //   error => this.errorMessage = error
-    // );
+    // Get the product
+    // For each supplier, get the supplier and add it to the array
+    this.productService.getProduct(id).subscribe(
+      product => {
+        this.product = product;
+        this.displayProduct(product);
+        product.supplierIds.map(supplierId => {
+          this.supplierService.getSupplier(supplierId).subscribe(
+            suppliers => this.suppliers.push(suppliers),
+            error => this.errorMessage = error
+          )
+        })
+      },
+      error => this.errorMessage = error
+    );
 
     // Displays each type of data without waiting
     // this.productService.getProduct(id).pipe(
@@ -46,13 +53,13 @@ export class ProductSuppliersComponent implements OnInit {
     // );
 
     // Waits for all of the data before displaying any
-    const product$ = this.productService.getProduct(id);
-    const suppliers$ = this.productService.getSuppliersForProduct(id);
-    forkJoin([product$, suppliers$])
-      .subscribe(([product, suppliers]) => {
-        this.product = product;
-        this.suppliers = suppliers;
-      });
+    // const product$ = this.productService.getProduct(id);
+    // const suppliers$ = this.productService.getSuppliersForProduct(id);
+    // forkJoin([product$, suppliers$])
+    //   .subscribe(([product, suppliers]) => {
+    //     this.product = product;
+    //     this.suppliers = suppliers;
+    //   });
 
   }
 

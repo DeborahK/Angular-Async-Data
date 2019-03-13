@@ -24,6 +24,7 @@ export class ProductService {
       );
   }
 
+  // Gets a single product by id
   getProduct(id: number): Observable<Product> {
     if (id === 0) {
       return of(this.initializeProduct());
@@ -37,44 +38,19 @@ export class ProductService {
   }
 
   // AntiPattern: Nested (or chained) http calls returns nested observables
-  // getProductWithSuppliers(id: number) {
-  //   const productUrl = `${this.productsUrl}/${id}`;
-  //   return this.http.get<Product>(productUrl)
-  //     .pipe(
-  //       map(product => {
-  //         const supplierUrl = `${this.suppliersUrl}?productId=${id}`;
-  //         return this.http.get(supplierUrl).pipe(tap(data => console.log(data)));
-  //       }),
-  //       catchError(this.handleError)
-  //     );
-  // }
-
-  // Gets the suppliers for a particular product given the product Id
-  getSuppliersForProduct(id: number): Observable<Supplier[]> {
-    const supplierUrl = `${this.suppliersUrl}?productId=^${id}$`;
-    return this.http.get<Supplier[]>(supplierUrl)
-      .pipe(
-        tap(data => console.log('getSuppliers: ' + JSON.stringify(data))),
-        catchError(this.handleError)
-      );
-  }
-
-  // To get the suppliers for a product
-  // Given the product name
-  // Gets the product to obtain the Id
-  // The query returns an array, so maps to the first product in the array
-  // Uses the id to get the suppliers
-  // Only returns the suppliers (not the product)
-  getSuppliersForProductByName(productName: string): Observable<Supplier[]> {
-    const productUrl = `${this.productsUrl}?productName=^${productName}$`;
+  // Gets all suppliers for a particular product given the product Id
+  // Get the product
+  // For each supplier for that product, get the supplier info
+  getProductWithSuppliers(id: number) {
+    const productUrl = `${this.productsUrl}/${id}`;
     return this.http.get<Product>(productUrl)
       .pipe(
-        map(products => products[0]),
-        mergeMap(product => {
-          const supplierUrl = `${this.suppliersUrl}?productId=^${product.id}$`;
-          return this.http.get<Supplier[]>(supplierUrl);
+        map(product => {
+          product.supplierIds.map(supplierId => {
+            const supplierUrl = `${this.suppliersUrl}?supplierId=${supplierId}`;
+            return this.http.get(supplierUrl).pipe(tap(data => console.log(data)));
+          })
         }),
-        tap(data => console.log(data)),
         catchError(this.handleError)
       );
   }

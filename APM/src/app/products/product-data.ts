@@ -10,7 +10,8 @@ export class ProductData {
       'description': 'Leaf rake with 48-inch wooden handle',
       'price': 19.95,
       'categoryId': 1,
-      'tags': ['rake', 'leaf', 'yard', 'home']
+      'tags': ['rake', 'leaf', 'yard', 'home'],
+      'supplierIds': [1, 2]
     },
     {
       'id': 2,
@@ -18,7 +19,8 @@ export class ProductData {
       'productCode': 'GDN-0023',
       'description': '15 gallon capacity rolling garden cart',
       'price': 32.99,
-      'categoryId': 1
+      'categoryId': 1,
+      'supplierIds': [1, 3]
     },
     {
       'id': 5,
@@ -28,6 +30,7 @@ export class ProductData {
       'price': 8.9,
       'categoryId': 3,
       'tags': ['tools', 'hammer', 'construction'],
+      'supplierIds': [3, 4]
     },
     {
       'id': 8,
@@ -35,7 +38,8 @@ export class ProductData {
       'productCode': 'TBX-0022',
       'description': '15-inch steel blade hand saw',
       'price': 11.55,
-      'categoryId': 3
+      'categoryId': 3,
+      'supplierIds': [3, 4, 5]
     },
     {
       'id': 10,
@@ -43,7 +47,8 @@ export class ProductData {
       'productCode': 'GMG-0042',
       'description': 'Standard two-button video game controller',
       'price': 35.95,
-      'categoryId': 5
+      'categoryId': 5,
+      'supplierIds': [3, 6]
     }
   ];
 }

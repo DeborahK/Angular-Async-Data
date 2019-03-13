@@ -15,19 +15,22 @@ export class ProductDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    const resolvedData: ProductResolved =
-      this.route.snapshot.data['resolvedData'];
-    this.errorMessage = resolvedData.error;
-    this.onProductRetrieved(resolvedData.product);
-  }
+    // Long for without destructuring
+    // const resolvedData: ProductResolved = this.route.snapshot.data['resolvedData'];
+    // this.product = resolvedData.product;
+    // this.errorMessage = resolvedData.error;
 
-  onProductRetrieved(product: Product): void {
+    // Use object destructuring to read the pieces of the resolved data.
+    const {product, error} = this.route.snapshot.data['resolvedData'];
     this.product = product;
+    this.errorMessage = error;
 
+    // Display the appropriate page header
     if (this.product) {
       this.pageTitle = `Product Detail: ${this.product.productName}`;
     } else {
       this.pageTitle = 'No product found';
     }
   }
+
 }

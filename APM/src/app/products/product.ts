@@ -1,5 +1,3 @@
-import { Supplier } from '../suppliers/supplier';
-
 /* Defines the product entity */
 export interface Product {
   id: number;
@@ -10,7 +8,7 @@ export interface Product {
   tags?: string[];
   price: number;
   description: string;
-  suppliers?: Supplier[];
+  supplierIds?: number[];
 }
 
 export interface ProductResolved {

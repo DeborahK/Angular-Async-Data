@@ -7,19 +7,19 @@
        *ngIf="product">
 
     <div class="row">
-      <div class="col-md-3">Name:</div>
+      <div class="col-md-2">Name:</div>
       <div class="col-md-6">{{product.productName}}</div>
     </div>
     <div class="row">
-      <div class="col-md-3">Code:</div>
+      <div class="col-md-2">Code:</div>
       <div class="col-md-6">{{product.productCode}}</div>
     </div>
     <div class="row">
-      <div class="col-md-3">Description:</div>
+      <div class="col-md-2">Description:</div>
       <div class="col-md-6">{{product.description}}</div>
     </div>
     <div class="row">
-      <div class="col-md-3">Price:</div>
+      <div class="col-md-2">Price:</div>
       <div class="col-md-6">{{product.price|currency:"USD":"symbol"}}</div>
     </div>
 
@@ -36,8 +36,8 @@
         <tbody>
           <tr *ngFor="let supplier of suppliers">
             <td>{{ supplier.name }} </td>
-            <td>{{ supplier.cost | currency:"USD":"symbol":"1.2-2" }}</td>
-            <td>{{ supplier.minQuantity }}</td>
+            <td>{{ supplier.supplierProducts[0].cost | currency:"USD":"symbol":"1.2-2" }}</td>
+            <td>{{ supplier.supplierProducts[0].minQuantity }}</td>
           </tr>
         </tbody>
       </table>
