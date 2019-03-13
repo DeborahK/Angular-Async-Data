@@ -1,4 +1,4 @@
-import { Supplier } from "../suppliers/supplier";
+import { Supplier } from '../suppliers/supplier';
 
 /* Defines the product entity */
 export interface Product {

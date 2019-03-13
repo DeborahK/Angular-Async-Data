@@ -48,7 +48,7 @@ export class ProductService {
   //       catchError(this.handleError)
   //     );
   // }
-  
+
   // Gets the suppliers for a particular product given the product Id
   getSuppliersForProduct(id: number): Observable<Supplier[]> {
     const supplierUrl = `${this.suppliersUrl}?productId=^${id}$`;
@@ -59,7 +59,7 @@ export class ProductService {
       );
   }
 
-  // To get the suppliers for a product 
+  // To get the suppliers for a product
   // Given the product name
   // Gets the product to obtain the Id
   // The query returns an array, so maps to the first product in the array

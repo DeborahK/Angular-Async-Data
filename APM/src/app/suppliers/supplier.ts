@@ -4,5 +4,5 @@ export interface Supplier {
     name: string;
     productId: number;
     cost: number;
-    minQuantity: number
+    minQuantity: number;
   }
