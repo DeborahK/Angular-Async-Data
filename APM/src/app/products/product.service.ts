@@ -51,7 +51,7 @@ export class ProductService {
   
   // Gets the suppliers for a particular product given the product Id
   getSuppliersForProduct(id: number): Observable<Supplier[]> {
-    const supplierUrl = `${this.suppliersUrl}?productId=${id}`;
+    const supplierUrl = `${this.suppliersUrl}?productId=^${id}$`;
     return this.http.get<Supplier[]>(supplierUrl)
       .pipe(
         tap(data => console.log('getSuppliers: ' + JSON.stringify(data))),
@@ -66,12 +66,12 @@ export class ProductService {
   // Uses the id to get the suppliers
   // Only returns the suppliers (not the product)
   getSuppliersForProductByName(productName: string): Observable<Supplier[]> {
-    const productUrl = `${this.productsUrl}?productName=${productName}`;
+    const productUrl = `${this.productsUrl}?productName=^${productName}$`;
     return this.http.get<Product>(productUrl)
       .pipe(
         map(products => products[0]),
         mergeMap(product => {
-          const supplierUrl = `${this.suppliersUrl}?productId=${product.id}`;
+          const supplierUrl = `${this.suppliersUrl}?productId=^${product.id}$`;
           return this.http.get<Supplier[]>(supplierUrl);
         }),
         tap(data => console.log(data)),

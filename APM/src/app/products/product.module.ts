@@ -11,6 +11,7 @@ import { ProductSuppliersComponent } from './product-suppliers/product-suppliers
 
 import { ProductResolver } from './product-detail/product-resolver.service';
 import { ProductEditGuard } from './product-edit/product-edit.guard';
+import { ProductListOneAtATimeComponent } from './product-list/product-list-one.component';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -32,6 +33,10 @@ import { SharedModule } from '../shared/shared.module';
         component: ProductListCategoryComponent
       },
       {
+        path: 'oneAtATime',
+        component: ProductListOneAtATimeComponent
+      },
+      {
         path: ':id',
         component: ProductDetailComponent,
         resolve: { resolvedData: ProductResolver }
@@ -51,6 +56,7 @@ import { SharedModule } from '../shared/shared.module';
     ProductListComponent,
     ProductListAsyncPipeComponent,
     ProductListCategoryComponent,
+    ProductListOneAtATimeComponent,
     ProductDetailComponent,
     ProductSuppliersComponent,
     ProductEditComponent

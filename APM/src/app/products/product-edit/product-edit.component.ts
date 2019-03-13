@@ -32,9 +32,9 @@ export class ProductEditComponent implements OnInit {
     const categories$ = this.productCategoryService.getCategories();
 
     // get the product and product category data in parallel
-    forkJoin([product$, categories$]).subscribe(result => {
-      this.product = result[0];
-      this.categories = result[1];
+    forkJoin([product$, categories$]).subscribe(([product, categories]) => {
+      this.product = product;
+      this.categories = categories;
       this.displayProduct();
     },
       error => this.errorMessage = <any>error
