@@ -15,7 +15,7 @@ import { PageNotFoundComponent } from './page-not-found.component';
   imports: [
     BrowserModule,
     HttpClientModule,
-    InMemoryWebApiModule.forRoot(AppData),
+    InMemoryWebApiModule.forRoot(AppData, { delay: 1000 }),
     AppRoutingModule
   ],
   declarations: [

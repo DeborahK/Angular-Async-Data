@@ -1,3 +1,5 @@
+import { Supplier } from "../suppliers/supplier";
+
 /* Defines the product entity */
 export interface Product {
   id: number;
@@ -8,7 +10,7 @@ export interface Product {
   tags?: string[];
   price: number;
   description: string;
-  imageUrl: string;
+  suppliers?: Supplier[];
 }
 
 export interface ProductResolved {

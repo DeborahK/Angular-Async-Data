@@ -13,6 +13,7 @@
             <th>Code</th>
             <th>Price</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -24,6 +25,12 @@
             </td>
             <td>{{ product.productCode }}</td>
             <td>{{ product.price | currency:"USD":"symbol":"1.2-2" }}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm"
+                      [routerLink]="[product.id, 'suppliers']">
+                Suppliers
+              </button>
+            </td>
             <td>
               <button class="btn btn-outline-primary btn-sm"
                       [routerLink]="[product.id, 'edit']">

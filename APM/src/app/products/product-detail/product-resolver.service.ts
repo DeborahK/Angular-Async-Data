@@ -4,8 +4,8 @@ import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/r
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-import { ProductResolved } from './product';
-import { ProductService } from './product.service';
+import { ProductResolved } from '../product';
+import { ProductService } from '../product.service';
 
 @Injectable({
   providedIn: 'root'

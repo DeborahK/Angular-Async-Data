@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap, map, concatMap, mergeMap, first, take } from 'rxjs/operators';
 
 import { Product } from './product';
+import { Supplier } from '../suppliers/supplier';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
   private productsUrl = 'api/products';
+  private suppliersUrl = 'api/suppliers';
 
   constructor(private http: HttpClient) { }
 
@@ -30,6 +32,49 @@ export class ProductService {
     return this.http.get<Product>(url)
       .pipe(
         tap(data => console.log('getProduct: ' + JSON.stringify(data))),
+        catchError(this.handleError)
+      );
+  }
+
+  // AntiPattern: Nested (or chained) http calls returns nested observables
+  // getProductWithSuppliers(id: number) {
+  //   const productUrl = `${this.productsUrl}/${id}`;
+  //   return this.http.get<Product>(productUrl)
+  //     .pipe(
+  //       map(product => {
+  //         const supplierUrl = `${this.suppliersUrl}?productId=${id}`;
+  //         return this.http.get(supplierUrl).pipe(tap(data => console.log(data)));
+  //       }),
+  //       catchError(this.handleError)
+  //     );
+  // }
+  
+  // Gets the suppliers for a particular product given the product Id
+  getSuppliersForProduct(id: number): Observable<Supplier[]> {
+    const supplierUrl = `${this.suppliersUrl}?productId=${id}`;
+    return this.http.get<Supplier[]>(supplierUrl)
+      .pipe(
+        tap(data => console.log('getSuppliers: ' + JSON.stringify(data))),
+        catchError(this.handleError)
+      );
+  }
+
+  // To get the suppliers for a product 
+  // Given the product name
+  // Gets the product to obtain the Id
+  // The query returns an array, so maps to the first product in the array
+  // Uses the id to get the suppliers
+  // Only returns the suppliers (not the product)
+  getSuppliersForProductByName(productName: string): Observable<Supplier[]> {
+    const productUrl = `${this.productsUrl}?productName=${productName}`;
+    return this.http.get<Product>(productUrl)
+      .pipe(
+        map(products => products[0]),
+        mergeMap(product => {
+          const supplierUrl = `${this.suppliersUrl}?productId=${product.id}`;
+          return this.http.get<Supplier[]>(supplierUrl);
+        }),
+        tap(data => console.log(data)),
         catchError(this.handleError)
       );
   }
@@ -91,8 +136,7 @@ export class ProductService {
       categoryId: null,
       tags: [],
       price: null,
-      description: null,
-      imageUrl: null
+      description: null
     };
   }
 }
