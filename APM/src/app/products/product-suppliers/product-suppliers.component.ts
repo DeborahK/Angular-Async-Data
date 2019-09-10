@@ -6,7 +6,7 @@ import { ProductService } from '../product.service';
 import { Supplier } from '../../suppliers/supplier';
 import { SupplierService } from '../../suppliers/supplier.service';
 
-import { mergeMap, tap, map } from 'rxjs/operators';
+import { mergeMap, tap, map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -19,8 +19,8 @@ export class ProductSuppliersComponent implements OnInit {
   errorMessage: string;
 
   constructor(private route: ActivatedRoute,
-    private productService: ProductService,
-    private supplierService: SupplierService) { }
+              private productService: ProductService,
+              private supplierService: SupplierService) { }
 
   ngOnInit(): void {
     // Read the parameter from the route
@@ -29,36 +29,59 @@ export class ProductSuppliersComponent implements OnInit {
     // AntiPattern: Nested subscriptions
     // Get the product
     // For each supplier, get the supplier and add it to the array
-    this.productService.getProduct(id).subscribe(
-      product => {
+    this.productService.getProduct(id).subscribe({
+      next: product => {
         this.product = product;
         this.displayProduct(product);
         product.supplierIds.map(supplierId => {
-          this.supplierService.getSupplier(supplierId).subscribe(
-            suppliers => this.suppliers.push(suppliers),
-            error => this.errorMessage = error
-          )
-        })
+          this.supplierService.getSupplier(supplierId).subscribe({
+            next: suppliers => this.suppliers.push(suppliers),
+            error: err => this.errorMessage = err
+          });
+        });
       },
-      error => this.errorMessage = error
-    );
+      error: err => this.errorMessage = err
+    });
 
     // Displays each type of data without waiting
     // this.productService.getProduct(id).pipe(
     //   tap(product => this.product = product),
-    //   mergeMap(product => this.productService.getSuppliersForProduct(id))
-    // ).subscribe(
-    //   suppliers => this.suppliers = suppliers,
-    //   error => this.errorMessage = error
-    // );
+    //   mergeMap(product => this.productService.getProductSuppliers(id))
+    // ).subscribe({
+    //   next: suppliers => this.suppliers = suppliers,
+    //   error: err => this.errorMessage = err
+    // });
+
+    // Displays each type of data without waiting
+    // this.productService.getProduct(id).pipe(
+    //   tap(product => this.product = product),
+    //   mergeMap(() => this.productService.getProductSuppliersOneByOne(id))
+    // ).subscribe({
+    //   next: supplier => this.suppliers.push(supplier),
+    //   error: err => this.errorMessage = err
+    // });
+
+    // From BL
+    // this.productService.getProduct(id).pipe(
+    //   tap(product => {
+    //     this.product = product;
+    //     this.displayProduct(product);
+    //   }),
+    //   mergeMap(() => this.supplierService.getSupplier(id))
+    // ).subscribe({
+    //   next: supplier => { this.suppliers.push(supplier); },
+    //   error: err => { this.errorMessage = err; },
+    // });
 
     // Waits for all of the data before displaying any
     // const product$ = this.productService.getProduct(id);
-    // const suppliers$ = this.productService.getSuppliersForProduct(id);
+    // const suppliers$ = this.productService.getProductSuppliers(id);
     // forkJoin([product$, suppliers$])
-    //   .subscribe(([product, suppliers]) => {
-    //     this.product = product;
-    //     this.suppliers = suppliers;
+    //   .subscribe({
+    //     next: ([product, suppliers]) => {
+    //       this.product = product;
+    //       this.suppliers = suppliers;
+    //     }
     //   });
 
   }

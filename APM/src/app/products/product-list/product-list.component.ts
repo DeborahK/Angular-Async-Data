@@ -18,27 +18,27 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   // Standard pattern
   // ngOnInit(): void {
-  //   this.productService.getProducts().subscribe(
-  //     products => {
+  //   this.productService.getProducts().subscribe({
+  //     next: products => {
   //       this.products = products;
   //       console.log(this.products);
   //     },
-  //     error => this.errorMessage = <any>error
-  //   );
+  //     error: err => this.errorMessage = err
+  //   });
   //   // This logs "undefined"
-  //   // console.log(this.products);
+  //   console.log(this.products);
   // }
 
   // Be sure to unsubscribe
   // Prevents processing the data if the user navigates away
   ngOnInit(): void {
-    this.subscription = this.productService.getProducts().subscribe(
-      products => {
+    this.subscription = this.productService.getProducts().subscribe({
+      next: products => {
         this.products = products;
         console.log(this.products);
       },
-      error => this.errorMessage = <any>error
-    );
+      error: err => this.errorMessage = err
+    });
     // This logs "undefined"
     // console.log(this.products);
   }

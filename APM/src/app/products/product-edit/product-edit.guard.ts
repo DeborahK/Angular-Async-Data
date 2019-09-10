@@ -11,9 +11,9 @@ import { ProductEditComponent } from './product-edit.component';
 export class ProductEditGuard implements CanDeactivate<ProductEditComponent> {
 
   canDeactivate(component: ProductEditComponent,
-    currentRoute: ActivatedRouteSnapshot,
-    currentState: RouterStateSnapshot,
-    nextState?: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
+                currentRoute: ActivatedRouteSnapshot,
+                currentState: RouterStateSnapshot,
+                nextState?: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 
     if (component.productForm.dirty) {
       const productName = component.productForm.get('productName').value || 'New Product';

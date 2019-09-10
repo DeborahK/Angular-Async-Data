@@ -33,10 +33,10 @@ export class ProductListOneAtATimeComponent implements OnInit {
   // }
 
   // retrieveProduct(): void {
-  //   this.productService.getProduct(this.productIds[this.currentIndex]).subscribe(
-  //     product => this.product = product,
-  //     error => this.errorMessage = <any>error
-  //   );
+  //   this.productService.getProduct(this.productIds[this.currentIndex]).subscribe({
+  //     next: product => this.product = product,
+  //     error: err => this.errorMessage = err
+  //   });
   // }
 
   // Unsubscribe to stop processing of prior request
@@ -56,10 +56,10 @@ export class ProductListOneAtATimeComponent implements OnInit {
   }
 
   retrieveProduct(): void {
-    this.sub = this.productService.getProduct(this.productIds[this.currentIndex]).subscribe(
-      product => this.product = product,
-      error => this.errorMessage = <any>error
-    );
+    this.sub = this.productService.getProduct(this.productIds[this.currentIndex]).subscribe({
+      next: product => this.product = product,
+      error: err => this.errorMessage = err
+    });
   }
 
   // Cancels processing of prior request with switchMap
@@ -74,12 +74,12 @@ export class ProductListOneAtATimeComponent implements OnInit {
   //   this.product$.pipe(
   //     switchMap(() =>
   //       this.productService.getProduct(this.productIds[this.currentIndex])
-  //     )).subscribe(
-  //       product => {
+  //     )).subscribe({
+  //       next: product => {
   //         this.product = product;
   //       },
-  //       error => this.errorMessage = <any>error
-  //     );
+  //       error: err => this.errorMessage = err
+  //     });
 
   //   // Call Next to perform the first retrieve
   //   this.product$.next();

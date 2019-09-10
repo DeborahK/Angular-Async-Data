@@ -3,24 +3,25 @@
     {{pageTitle}}
   </div>
 
-  <div class="card-body"
-       *ngIf="product">
+  <div class="card-body">
 
-    <div class="row">
-      <div class="col-md-2">Name:</div>
-      <div class="col-md-6">{{product.productName}}</div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">Code:</div>
-      <div class="col-md-6">{{product.productCode}}</div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">Description:</div>
-      <div class="col-md-6">{{product.description}}</div>
-    </div>
-    <div class="row">
-      <div class="col-md-2">Price:</div>
-      <div class="col-md-6">{{product.price|currency:"USD":"symbol"}}</div>
+    <div *ngIf="product">
+      <div class="row">
+        <div class="col-md-2">Name:</div>
+        <div class="col-md-6">{{product.productName}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">Code:</div>
+        <div class="col-md-6">{{product.productCode}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">Description:</div>
+        <div class="col-md-6">{{product.description}}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">Price:</div>
+        <div class="col-md-6">{{product.price|currency:"USD":"symbol"}}</div>
+      </div>
     </div>
 
     <div class="table-responsive">
@@ -36,8 +37,8 @@
         <tbody>
           <tr *ngFor="let supplier of suppliers">
             <td>{{ supplier.name }} </td>
-            <td>{{ supplier.supplierProducts[0].cost | currency:"USD":"symbol":"1.2-2" }}</td>
-            <td>{{ supplier.supplierProducts[0].minQuantity }}</td>
+            <td>{{ supplier.cost | currency:"USD":"symbol":"1.2-2" }}</td>
+            <td>{{ supplier.minQuantity }}</td>
           </tr>
         </tbody>
       </table>

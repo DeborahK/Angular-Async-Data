@@ -15,7 +15,7 @@ export class ProductListCategoryComponent implements OnInit {
   products: Product[];
 
   constructor(private productService: ProductService,
-    private productCategoryService: ProductCategoryService) { }
+              private productCategoryService: ProductCategoryService) { }
 
   ngOnInit(): void {
     // Get the product and product category data in parallel
@@ -25,25 +25,27 @@ export class ProductListCategoryComponent implements OnInit {
     const categories$ = this.productCategoryService.getCategories();
     forkJoin([products$, categories$]).pipe(
       map(([products, categories]) =>
-        products.map(p => Object.assign({}, p, {'categoryName': categories.find(c => p.categoryId === c.id).name}))
+        products.map(p => Object.assign({}, p, { categoryName: categories.find(c => p.categoryId === c.id).name }))
       )
-    ).subscribe(result => {
-      this.products = result;
-    },
-      error => this.errorMessage = <any>error
-    );
+    ).subscribe({
+      next: result => {
+        this.products = result;
+      },
+      error: err => this.errorMessage = err
+    });
 
     // Without destructuring
     // It's not as clear what data[0] and data[1] are
     // forkJoin([products$, categories$]).pipe(
     //   map((data) =>
-    //     data[0].map(p => Object.assign({}, p, {"categoryName": data[1].find(c => p.categoryId === c.id).name}))
+    //     data[0].map(p => Object.assign({}, p, { categoryName: data[1].find(c => p.categoryId === c.id).name }))
     //   )
-    // ).subscribe(result => {
-    //   this.products = result;
-    // },
-    //   error => this.errorMessage = <any>error
-    // );
+    // ).subscribe({
+    //   next: result => {
+    //     this.products = result;
+    //   },
+    //   error: err => this.errorMessage = err
+    // });
   }
 
 }

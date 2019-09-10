@@ -19,10 +19,10 @@ export class ProductEditComponent implements OnInit {
   errorMessage: string;
 
   constructor(private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private productService: ProductService,
-    private productCategoryService: ProductCategoryService) {
+              private route: ActivatedRoute,
+              private router: Router,
+              private productService: ProductService,
+              private productCategoryService: ProductCategoryService) {
   }
 
   ngOnInit(): void {
@@ -32,13 +32,14 @@ export class ProductEditComponent implements OnInit {
     const categories$ = this.productCategoryService.getCategories();
 
     // get the product and product category data in parallel
-    forkJoin([product$, categories$]).subscribe(([product, categories]) => {
-      this.product = product;
-      this.categories = categories;
-      this.displayProduct();
-    },
-      error => this.errorMessage = <any>error
-    );
+    forkJoin([product$, categories$]).subscribe({
+      next: ([product, categories]) => {
+        this.product = product;
+        this.categories = categories;
+        this.displayProduct();
+      },
+      error: err => this.errorMessage = err
+    });
   }
 
   displayProduct(): void {
@@ -69,10 +70,10 @@ export class ProductEditComponent implements OnInit {
     } else {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
         this.productService.deleteProduct(this.product.id)
-          .subscribe(
-            () => this.onSaveComplete(),
-            (error: any) => this.errorMessage = <any>error
-          );
+          .subscribe({
+            next: () => this.onSaveComplete(),
+            error: err => this.errorMessage = err
+          });
       }
     }
   }
@@ -84,16 +85,16 @@ export class ProductEditComponent implements OnInit {
 
         if (p.id === 0) {
           this.productService.createProduct(p)
-            .subscribe(
-              () => this.onSaveComplete(),
-              (error: any) => this.errorMessage = <any>error
-            );
+            .subscribe({
+              next: () => this.onSaveComplete(),
+              error: err => this.errorMessage = err
+            });
         } else {
           this.productService.updateProduct(p)
-            .subscribe(
-              () => this.onSaveComplete(),
-              (error: any) => this.errorMessage = <any>error
-            );
+            .subscribe({
+              next: () => this.onSaveComplete(),
+              error: err => this.errorMessage = err
+            });
         }
       } else {
         this.onSaveComplete();
